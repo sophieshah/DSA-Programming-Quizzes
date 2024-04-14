@@ -1,0 +1,43 @@
+#include <iostream>
+#include <string>
+#include <algorithm>
+#include <map>
+using namespace std;
+
+std::string findTheDigits(std::string x, std::string y) {
+
+	map<char, int> m;
+
+	//add digits 0-9 into map
+	for (int k = 0; k < 10; k++) {
+		m[static_cast<char>(k)] = 0;
+	}
+
+	//add one to value of each digit in y
+	for (int i = 0; i < y.length(); i++) {
+		//cout<<y[i]<< endl;
+		m[y[i]] ++;
+	}
+
+	//subtract one from value of each digit in x
+	for (int j = 0; j < x.length(); j++) {
+		//cout<<x[j]<< endl;
+		m[x[j]] --;
+		//cout<<dig[to_string(x[j])]<<endl;
+	}
+
+	string output ="";
+
+	map<char, int>::iterator it;
+	for(it = m.begin(); it != m.end(); it++){
+		//cout<<it->first<<it->second<<endl;
+		if (it->second > 0) {
+			//if there is more than 1 instance of the same digit
+			for (int r = 0; r < it->second; r++){
+				output += it->first;
+			}	
+		}
+	}
+
+	return output;
+}

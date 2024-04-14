@@ -1,0 +1,112 @@
+/*
+    Interquartile Range
+
+    Given a sorted singly linked list without a tail (e.g, head -> 1 -> 2 -> 3 -> 4), 
+    return the interquartile range of the data set using the slow and fast pointer 
+    approach OR using a methodology that does not iterate over the linked list 
+    twice. You must not iterate over the entire linked list more than once and you 
+    cannot use arrays, vectors, lists or an STL implementation of List ADT in this problem.
+
+    Sample Input:
+        2 4 4 5 6 7 8
+    
+    Sample Output:
+        3.00 
+*/
+
+#include <iostream>
+#include <iomanip>
+
+class Node {
+    public:
+        int value;
+        Node* next = nullptr;
+};
+
+Node* insertEnd(Node* head, int key)
+{
+    Node* temp = new Node();
+    temp->value = key;
+    if(head == nullptr)
+        head = temp;
+    else
+    {
+        Node* curr = head;
+        while(curr->next != nullptr)
+            curr = curr->next;
+        curr->next = temp;
+    }
+    return head;
+}
+
+float interQuartile(Node* head)
+{
+    Node* fast = head;
+    Node* slow = head;
+    Node* Q1Node = head;
+    Node* Q3Node = head;
+    Node* Q1Prev = head;
+    Node* Q3Prev = head;
+    bool moveSlow = false;
+    bool moveQ1Prev = false;
+    bool moveQ3Prev = false;
+    int fastCount = 0;
+    int Q1Count = 0;
+    int Q3Count = 0;
+    float Q1Value;
+    float Q3Value;
+
+    while (fast->next!=nullptr){
+        fast = fast->next;
+        fastCount++;
+        if(fastCount % 4 ==0){
+            Q1Node = Q1Node->next;
+            Q1Count++;
+            if(moveQ1Prev){
+                Q1Prev = Q1Prev->next;
+            }
+            moveQ1Prev = !moveQ1Prev;
+        }
+        else{
+            Q3Node = Q3Node->next;
+            Q3Count++;
+            if(Q3Count>1){
+                Q3Prev = Q3Prev->next;
+            }
+        }
+        if(moveSlow){
+            slow = slow->next;
+        }
+        moveSlow = !moveSlow;
+    }
+    //cout<<fastCount<<endl;
+    fastCount++;
+
+
+    if(fastCount %2!=0){
+        if(fastCount%4==1){
+            Q1Value = (Q1Node->value + Q1Prev->value) / 2.0f;
+            Q3Value = (Q3Node->value + Q3Node->next->value) / 2.0f;
+        }
+        else if(fastCount %4==3){
+            Q1Value = Q1Node->value;
+            Q3Value = Q3Node->value;
+        }
+    }
+    else{
+        if(fastCount%4==0){
+            Q1Value = (Q1Node->value + Q1Node->next->value) / 2.0f;
+            //cout<< Q1Node->value << " "<< Q1Node->next->value<<endl;
+            Q3Value = (Q3Node->value + Q3Prev->value) / 2.0f;
+            //cout<< Q3Node->value << " "<< Q3Prev->value<<endl;
+
+        }
+        else{
+            Q1Value = Q1Node->value;
+            Q3Value = Q3Node->value;
+        }
+    }
+    //cout<< Q1Value<<endl;
+    //cout<< Q3Value<<endl;
+    return Q3Value - Q1Value;
+}

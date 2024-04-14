@@ -1,0 +1,79 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+//process inspired by discussion slides
+
+vector<int> heapifyDown(int index, int size, vector<int> arr){
+	//gets the left and right child index
+	int leftChildIndex = (2*index) +1;
+	int rightChildIndex = (2*index) +2;
+	//cout<<"left index "<<leftChildIndex<<" and right "<<rightChildIndex<<endl;
+	int leftChild;
+	int rightChild;
+
+	//if both children exist compare which is larger, swap them, 
+	//and call recursive function on index of higher element
+	if(leftChildIndex<size && rightChildIndex<size){
+		leftChild = arr[leftChildIndex];
+		rightChild = arr[rightChildIndex];
+
+		if(leftChild>rightChild){
+			//cout<<"at both+left child index"<<endl;
+			arr[leftChildIndex] = arr[index];
+			arr[index] = leftChild;
+			return heapifyDown(leftChildIndex,size,arr);
+		}
+		else{
+			//cout<<"at both+right child index"<<endl;
+			arr[rightChildIndex] = arr[index];
+			arr[index] = rightChild;
+			return heapifyDown(rightChildIndex,size,arr);
+		}
+	}
+	//if only left child exists then swap and pass into recursive function
+	else if(leftChildIndex<size){
+		//cout<<"at left child index"<<endl;
+		leftChild = arr[leftChildIndex];
+		arr[leftChildIndex] = arr[index];
+		arr[index] = leftChild;
+		return heapifyDown(leftChildIndex,size,arr);
+
+	}
+	//if only right child exists then swap and pass into recursive function
+	else if(rightChildIndex<size){
+		//cout<<"at right child index"<<endl;
+		rightChild = arr[rightChildIndex];
+		arr[rightChildIndex] = arr[index];
+		arr[index] = rightChild;
+		return heapifyDown(rightChildIndex,size,arr);
+	}
+	return arr;
+}
+
+int* extractMax(int arr[], int size)
+{
+    // code here
+	// main prints the final heap array from 0 to size - 2
+	// you don't need to print the array but instead return
+	int newSize = size-1;
+	vector<int> vect;
+	//copy array elements into vector
+	for(int i=0; i<size; i++){
+		vect.push_back(arr[i]);
+	}
+	//erase first element and swap last element to the front
+	vect.erase(vect.begin());
+	int lastElement = vect[newSize-1];
+	vect.insert(vect.begin(),lastElement);
+
+	//call heapify function
+	vect = heapifyDown(0,newSize, vect);
+
+	//copy elements of new vector into original array
+	for(int j=0; j<newSize; j++){
+		arr[j] = vect[j];
+	}	
+	
+	return arr; 
+}
